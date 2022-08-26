@@ -21,4 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/teq/mobiles',views.MobileView.as_view()),
     path('api/v1/teq/<int:id>',views.MobileDetailView.as_view()),
+    path('api/v2/teq/mobiles',views.MobileModelView.as_view()),
+    path('api/v2/teq/mobiles/<int:id>',views.MobileDetailView.as_view()),
+
 ]

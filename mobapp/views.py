@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from mobapp.serializers import MobileSerializer
+from mobapp.serializers import MobileSerializer,MobileModelSerializer
 from mobapp.models import Mobiles
 
 # Create your views here.
@@ -50,6 +50,38 @@ class MobileDetailView(APIView):
             qs.price = serializer.validated_data.get('price')
             qs.rating = serializer.validated_data.get('rating')
             qs.save()
+            return Response(data=serializer.data)
+        else:
+            return Response(data=serializer.errors)
+
+
+
+
+class MobileModelView(APIView):
+    def get(self,request,*ags,**kwargs):
+        qs=Mobiles.objects.all()
+        serializer=MobileSerializer(qs,many=True)
+        return Response(data=serializer.data)
+    def post(self,request,*args,**kwargs):
+        serializer=MobileModelSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data)
+        else:
+            return Response(data=serializer.errors)
+
+class MobileDetailsView(APIView):
+    def get(self,request,*args,**kwargs):
+        id=kwargs.get('id')
+        mobile=Mobiles.objects.get(id=id)
+        serializer=MobileModelSerializer(mobile)
+        return Response(data=serializer.data)
+    def put(self,request,*args,**kwargs):
+        id=kwargs.get('id')
+        mobile=Mobiles.objects.get(id=id)
+        serializer=MobileModelSerializer(instance=mobile,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
             return Response(data=serializer.data)
         else:
             return Response(data=serializer.errors)
